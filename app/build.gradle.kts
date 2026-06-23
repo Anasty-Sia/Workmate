@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -77,4 +78,20 @@ dependencies {
     // Корутины для Android (чтобы удобно работать с жизненным циклом)
     implementation(libs.kotlinx.coroutines.android)
 
+    detektPlugins(libs.detekt.formatting)
+
+}
+
+// Настройка Detekt
+detekt {
+    toolVersion = libs.versions.detekt.get()
+    config = files("detekt.yml")
+    buildUponDefaultConfig = true
+    allRules = false
+}
+
+// Задача для проверки кода
+tasks.register("checkCode") {
+    dependsOn("detekt")
+    description = "Запускает Detekt и проверяет код на соответствие правилам"
 }

@@ -1,0 +1,166 @@
+# detekt.yml
+
+# Настройки сборки
+build:
+  maxIssues: 0  # 0 = блокируем сборку при любой ошибке
+  excludeCorrectable: false
+  weights:
+    complexity: 2
+    longMethod: 1
+    LongParameterList: 1
+
+# Правила, которые проверяются
+config:
+  validation: true
+  warningsAsErrors: true  # все предупреждения считаем ошибками
+
+# Проверяем только эти правила
+processors:
+  active: true
+  exclude:
+    - 'DetektProgressListener'
+
+console-reports:
+  active: true
+  exclude:
+    - 'FindingsReport'
+    - 'FileBasedFindingsReport'
+
+# ===== ПРАВИЛА =====
+
+# 1. СЛОЖНОСТЬ (COMPLEXITY)
+complexity:
+  # Тело функции не больше 50 строк
+  LongMethod:
+    active: true
+    threshold: 50
+    ignoreAnnotated: ['Composable', 'Preview']  # Compose функции могут быть длиннее
+
+  # Количество аргументов в функции не больше 6
+  LongParameterList:
+    active: true
+    threshold: 6
+    ignoreDefaultParameters: false
+    ignoreDataClasses: true  # data class конструкторы могут иметь много параметров
+
+  # Тело класса не больше 350 строк
+  LargeClass:
+    active: true
+    threshold: 350
+
+  # Сложность цикла
+  ComplexMethod:
+    active: true
+    threshold: 15
+
+  # Количество полей в классе
+  TooManyFunctions:
+    active: true
+    thresholdInClasses: 20
+    thresholdInFiles: 30
+
+  # Вложенность условий
+  NestedBlockDepth:
+    active: true
+    threshold: 4
+
+# 2. СТИЛЬ (STYLE)
+style:
+  # Использовать правильные имена для переменных
+  ForbiddenComment:
+    active: false  # разрешаем TODO, FIXME
+
+  # Не использовать магические числа (кроме очевидных)
+  MagicNumber:
+    active: false  # разрешаем (иначе будет много ошибок)
+
+  # Неиспользуемые импорты
+  UnusedImports:
+    active: true
+
+  # Неиспользуемые переменные
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated: ['Preview']
+
+  # Шаблон для имен классов
+  ClassNaming:
+    active: true
+    pattern: '[A-Z][a-zA-Z0-9]*'
+
+  # Шаблон для имен функций
+  FunctionNaming:
+    active: true
+    pattern: '[a-z][a-zA-Z0-9]*'
+    exclude: ['Composable']  # Compose функции могут начинаться с заглавной
+
+  # Шаблон для имен переменных
+  VariableNaming:
+    active: true
+    pattern: '[a-z][a-zA-Z0-9]*'
+
+  # Max line length
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+    excludePackageStatements: true
+    excludeImportStatements: true
+    excludeCommentStatements: false
+
+# 3. ПОТЕНЦИАЛЬНЫЕ БАГИ (POTENTIAL BUGS)
+potential-bugs:
+  # Неправильный equals/hashCode
+  EqualsAlwaysReturnsTrueOrFalse:
+    active: true
+
+  # Неправильный toString
+  ExplicitGarbageCollectionCall:
+    active: true
+
+  # Неправильное использование when (нет else ветки)
+  ElseCaseInsteadOfExhaustiveWhen:
+    active: true
+
+  # Неправильное приведение типов
+  UnsafeCast:
+    active: true
+
+  # Null проверки
+  UnnecessaryNullableReturnType:
+    active: true
+    threshold: 1
+
+# 4. ПРАВИЛА ДЛЯ COROUTINES
+coroutines:
+  # Не использовать GlobalScope
+  GlobalScopeUsage:
+    active: true
+
+  # Правильно обрабатывать исключения в корутинах
+  RedundantSuspendModifier:
+    active: true
+
+# 5. ПРАВИЛА ДЛЯ EXCEPTIONS
+exceptions:
+  # Не выбрасывать общие исключения
+  ExceptionRaisedInUnexpectedLocation:
+    active: true
+
+  # Не перехватывать Throwable
+  TooGenericExceptionCaught:
+    active: true
+    exceptionNames:
+      - 'Throwable'
+      - 'Exception'
+
+# ===== ИСКЛЮЧЕНИЯ (что НЕ проверяем) =====
+
+# Правила, которые отключаем полностью
+exclude:
+  # Не проверяем файлы в папке build
+  - '**/build/**'
+  # Не проверяем сгенерированный код
+  - '**/generated/**'
+  # Не проверяем тесты (можно проверять отдельно)
+  - '**/test/**'
+  - '**/androidTest/**'
