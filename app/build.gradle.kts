@@ -1,15 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.example.workmate"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
+
+
 
     defaultConfig {
         applicationId = "com.example.workmate"
@@ -23,9 +23,7 @@ android {
 
     buildTypes {
         release {
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = false
         }
     }
     compileOptions {
@@ -54,4 +52,29 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+
+    // Retrofit and Gson
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+    implementation(libs.retrofit)
+
+    //Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    // Compose Navigation с Hilt
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Основная библиотека Room
+    implementation(libs.androidx.room.runtime)
+    // Корутины — для асинхронной работы с Room
+    implementation(libs.androidx.room.ktx)
+    // Компилятор Room (для KSP)
+    ksp(libs.androidx.room.compiler)
+
+    // Базовые корутины
+    implementation(libs.kotlinx.coroutines.core)
+    // Корутины для Android (чтобы удобно работать с жизненным циклом)
+    implementation(libs.kotlinx.coroutines.android)
+
 }
